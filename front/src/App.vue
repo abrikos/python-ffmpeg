@@ -1,61 +1,57 @@
 <script setup>
 import {ref} from "vue";
-
-const fileupload = ref()
+const url = ref()
+const error = ref()
+const fileInput = ref()
+const loading = ref(false)
 async function upload(event){
-  event.preventDefault(); // Prevent
+  event.preventDefault()
+  clear()
   const formData = new FormData();
   formData.append('uploadedVideo',event.target.files[0]);
   fetch('/api/add-emoji', {method: 'POST', body: formData})
-      .then(response => {
-        console.log(response)
-        if (response.ok) {
-          console.log('File uploaded successfully!');
-          // Handle success (e.g., show a message to the user)
-        } else {
-          console.error('File upload failed.');
-          // Handle errors
+      .then(response => response.json())
+      .then(data => {
+        if(data.code === 200){
+          url.value = data.url;
+        }else{
+          error.value = data.message;
         }
+
+        loading.value = false
       })
-      .catch(error => {
-        console.error('Error during file upload:', error);
+      .catch(e => {
+        loading.value = false
+        error.value = e
       });
-  fileupload.value.value = null
+  fileInput.value.value = null
 }
+
+function clear(){
+  loading.value = false
+  loading.value = true
+  url.value = null
+  error.value = null
+}
+
 </script>
 
 <template>
 
-  <main>
-    <input type="file" @change="upload" ref="fileupload"/>
-  </main>
+  <div>
+    <input type="file" @change="upload" ref="fileInput" accept="video/*"/>
+    <button @click="clear">Clear</button>
+    <h1 v-if="loading" class="loader">...Please wait while the video is being processed. </h1>
+    <video v-if="url" :src="url" autoplay loop/>
+    <h1 class="error" v-if="error">{{error}}</h1>
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+.loader{
+  color: green
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.error{
+  color: red
 }
 </style>
