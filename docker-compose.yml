@@ -1,0 +1,33 @@
+services:
+  frontend_app:
+    build: ./front
+
+  backend_app:
+    env_file:
+      - ./.env
+    environment:
+      DATABASE_HOST: db
+    build: .
+#    command: >
+#      bash -c "apt-get update && apt-get install ffmpeg -y"
+    volumes:
+      - .:/code
+      - static_volume:/code/static
+    ports:
+      - "8000"
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - static_volume:/app/staticfiles
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend_app
+      - frontend_app
+networks:
+  default:
+
+volumes:
+  static_volume:
