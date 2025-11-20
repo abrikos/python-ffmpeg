@@ -5,8 +5,10 @@ const error = ref()
 const fileInput = ref()
 const loading = ref(false)
 async function upload(event){
-  event.preventDefault()
   clear()
+  loading.value = true
+  event.preventDefault()
+
   const formData = new FormData();
   formData.append('uploadedVideo',event.target.files[0]);
   fetch('/api/add-emoji', {method: 'POST', body: formData})
@@ -29,7 +31,6 @@ async function upload(event){
 
 function clear(){
   loading.value = false
-  loading.value = true
   url.value = null
   error.value = null
 }
