@@ -40,7 +40,7 @@ function clear(){
 <template>
 
   <div>
-    <input type="file" @change="upload" ref="fileInput" accept="video/*"/>
+    <input type="file" @change="upload" ref="fileInput" xaccept="video/*"/>
     <button @click="clear">Clear</button>
     <h1 v-if="loading" class="loader">...Please wait while the video is being processed. </h1>
     <video v-if="url" :src="url" autoplay loop/>

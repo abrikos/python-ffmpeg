@@ -37,11 +37,17 @@ def process_add_emoji(file_path):
                 tmp_file,
             ]
         )
-        os.rename(tmp_file, file_path)
+
     except subprocess.CalledProcessError as e:
         status["code"] = 500
         status["message"] = str(e)
         status["tmp"] = tmp_file
+    if os.path.exists(tmp_file):
+        os.rename(tmp_file, file_path)
+    else:
+        status["code"] = 400
+        status["message"] = 'Wrong video'
+
     return status
 
 
@@ -79,6 +85,8 @@ def endpoint_add_emoji(request):
                     tg_upload_file(chat_id, file=path)
                 else:
                     tg_send_message(chat_id, "Error")
+            else:
+                tg_send_message(chat_id, "Wrong video")
             return HttpResponse(200)
     else:
         return JsonResponse(response)

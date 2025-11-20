@@ -22,6 +22,6 @@ from config import settings
 from smile import views
 
 urlpatterns = [
-    path("api/add-emoji", views.endpoint_add_emoji, name="add-emoji"),
+    path("", views.endpoint_add_emoji, name="add-emoji"),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
