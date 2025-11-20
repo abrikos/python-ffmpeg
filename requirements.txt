@@ -2,4 +2,3 @@ django
 python-dotenv
 requests
 django-requests
-celery
